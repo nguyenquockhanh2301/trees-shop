@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const productRoutes = require('./routes/productRoutes');
 
 // Initialize app and config
 dotenv.config();
@@ -21,6 +22,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/products', productRoutes);
 
 // 💡 Import routes **after** defining app and config
 const categoryRoutes = require('./routes/categories');
