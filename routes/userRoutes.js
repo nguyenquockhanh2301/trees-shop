@@ -1,9 +1,8 @@
 const express = require('express');
-const router = express.Router(); // ✅ THIS is what was missing
-
+const router = express.Router();
+const User = require('../models/User');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User'); // Adjust the path if needed
 
 
 router.post('/register', async (req, res) => {
