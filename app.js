@@ -10,9 +10,9 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static('public')); // to serve CSS
+app.use(express.static('public')); // to serve CSSnpm start
 app.set('view engine', 'ejs');
-
+app.set("views", path.join(__dirname, "views"));
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ MongoDB connected'))
