@@ -1,42 +1,38 @@
-// Import dependencies
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const productRoutes = require('./routes/productRoutes');
+const path = require('path');
 
-// Initialize app and config
+// Load env
 dotenv.config();
+
 const app = express();
+const PORT = process.env.PORT || 8080;
 
-// Connect to MongoDB
-console.log('Connecting to:', process.env.MONGODB_URI);
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Connect DB
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => console.log('✅ MongoDB connected'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use('/api/products', productRoutes);
-
-// 💡 Import routes **after** defining app and config
-const categoryRoutes = require('./routes/categories');
+.catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // Routes
-app.use('/api/categories', categoryRoutes);
+const treeRoutes = require('./routes/treeRoutes');
+app.use('/api/trees', treeRoutes);
 
-// 404 fallback
+// Fallback
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
 // Start server
-const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
