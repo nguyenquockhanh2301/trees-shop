@@ -1,5 +1,9 @@
+const express = require('express');
+const router = express.Router(); // ✅ THIS is what was missing
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const User = require('../models/User'); // Adjust the path if needed
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -20,3 +24,5 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+module.exports = router;
