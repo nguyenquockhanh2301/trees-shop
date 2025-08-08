@@ -5,23 +5,25 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User'); // Adjust the path if needed
 
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
 
+router.post('/register', async (req, res) => {
   try {
-    const user = await User.findOne({ username });
-    if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    const { username, email, password } = req.body;
 
-    // Create JWT
-    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
+    // ✅ Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
     });
 
-    res.json({ token, user: { id: user._id, username: user.username, role: user.role } });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    await newUser.save();
+
+    res.status(201).json({ message: 'User created successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
