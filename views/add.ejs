@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+
+<h2>Add New Tree</h2>
+
+<% if (error) { %>
+  <p style="color:red;"><%= error %></p>
+<% } %>
+
+<form action="/add" method="POST">
+  <label>Tree Name:</label><br>
+  <input type="text" name="treename" required><br>
+
+  <label>Description:</label><br>
+  <textarea name="description" required></textarea><br>
+
+  <label>Image URL (optional):</label><br>
+  <input type="text" name="image"><br>
+
+  <button type="submit">Add Tree</button>
+</form>
+
+<%- include('partials/footer') %>

@@ -1,38 +1,52 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const cors = require('cors');
 const path = require('path');
+const Tree = require('./models/Tree');
 
-// Load env
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8080;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public')); // to serve CSS
+app.set('view engine', 'ejs');
 
-// Connect DB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✅ MongoDB connected'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB error:', err));
 
 // Routes
-const treeRoutes = require('./routes/treeRoutes');
-app.use('/api/trees', treeRoutes);
-
-// Fallback
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+app.get('/', async (req, res) => {
+  const trees = await Tree.find();
+  res.render('index', { trees });
 });
 
-// Start server
+app.get('/add', (req, res) => {
+  res.render('add', { error: null });
+});
+
+app.post('/add', async (req, res) => {
+  const { treename, description, image } = req.body;
+  if (!treename || !description) {
+    return res.render('add', { error: 'Tree name and description are required!' });
+  }
+  await Tree.create({ treename, description, image });
+  res.redirect('/');
+});
+
+app.get('/about', (req, res) => {
+  res.render('about');
+});
+
+app.post('/reset', async (req, res) => {
+  await Tree.deleteMany();
+  res.redirect('/');
+});
+
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

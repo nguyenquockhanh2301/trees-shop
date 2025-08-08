@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <h2>Tree Shop</h2>
+
+  <form action="/add" method="POST">
+    <label>Tree Name</label>
+    <input type="text" name="treename" required>
+
+    <label>Description</label>
+    <textarea name="description" required></textarea>
+
+    <label>Image URL</label>
+    <input type="text" name="image">
+
+    <button class="add-btn" type="submit">Add</button>
+  </form>
+
+  <form action="/reset" method="POST" style="display:inline;">
+    <button class="reset-btn" type="submit">Reset</button>
+  </form>
+
+  <table>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Image</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+    <% trees.forEach((tree, index) => { %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= tree.treename %></td>
+        <td>
+          <% if (tree.image) { %>
+            <img src="<%= tree.image %>" class="thumbnail">
+          <% } %>
+        </td>
+        <td><%= tree.description %></td>
+        <td>
+          <!-- Placeholder for edit/delete -->
+          <a href="#"><i>✏️</i></a>
+          <a href="#"><i>🗑️</i></a>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</div>
+
+<%- include('partials/footer') %>
