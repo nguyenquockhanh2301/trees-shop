@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
-const userRoutes = require('./routes/userRoutes');
 
 // Initialize app and config
 dotenv.config();
@@ -24,7 +23,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use(cors());
 app.use(express.json());
 app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
 
 // 💡 Import routes **after** defining app and config
 const categoryRoutes = require('./routes/categories');
